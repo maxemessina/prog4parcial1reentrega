@@ -7,6 +7,12 @@ export const gramosPorTamanoExpreso: Record<TamanoCafe, number> = {
   "Taza grande": 36,
 };
 
+export const gramosPorTamanoFiltrado: Record<TamanoCafe, number> = {
+  Pocillo: 6,
+  Mediano: 15,
+  "Taza grande": 25,
+};
+
 export const precioPorGramo: Record<VariedadCafe, number> = {
   Brasil: 140,
   Colombia: 180,
