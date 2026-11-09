@@ -1,6 +1,9 @@
 
 import { describe, expect, it } from "vitest";
-import { listarProductos } from "../../src/services/productoService";
+import {
+  listarProductos,
+  obtenerProductoPorId,
+} from "../../src/services/productoService";
 
 describe("ProductoService", () => {
   it("devuelve los 20 productos del catálogo", () => {
@@ -13,4 +16,16 @@ describe("ProductoService", () => {
     expect(productos.filter((p) => p.nombre === "Muffin de chocolate")).toHaveLength(1);
     expect(productos.filter((p) => p.nombre === "Porción de torta selva negra")).toHaveLength(1);
   });
+
+  it("busca un producto por su ID y devuelve undefined si no existe", () => {
+    const productos = listarProductos();
+
+    const producto = obtenerProductoPorId(1);
+    const inexistente = obtenerProductoPorId(999);
+
+    expect(producto).toBeDefined();
+    expect(producto).toEqual(productos[0]);
+    expect(inexistente).toBeUndefined();
+  });
 });
+
