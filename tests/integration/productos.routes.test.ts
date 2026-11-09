@@ -3,9 +3,7 @@ import { describe, expect, it } from "vitest";
 import request from "supertest";
 import { createApp } from "../../src/app";
 import { Router } from "express";
-import { listarProductos } from "../../src/services/productoService";
-
-const productosRouter = Router();
+import productosRouter from "../../src/routes/productos.routes";
 
 const app = createApp({
   productos: productosRouter,
@@ -21,3 +19,4 @@ describe("GET /productos", () => {
     expect(response.body).toHaveLength(20);
   });
 });
+
