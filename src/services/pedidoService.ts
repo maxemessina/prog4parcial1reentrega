@@ -40,6 +40,12 @@ export class PedidoService {
     return this.pedidos.map((pedido) => this.copiarPedido(pedido));
   }
 
+  obtenerPedidoPorId(id: number): Pedido | undefined {
+    const pedido = this.pedidos.find((pedido) => pedido.id === id);
+
+    return pedido ? this.copiarPedido(pedido) : undefined;
+  }
+
   private copiarPedido(pedido: Pedido): Pedido {
     return {
       ...pedido,
