@@ -126,4 +126,13 @@ describe("PedidoService", () => {
       cantidad: 5,
     });
   });
+
+  it("devuelve undefined cuando no hay ventas", () => {
+    const productoService = {
+      obtenerProductoPorId: vi.fn(),
+    };
+    const pedidoService = new PedidoService(productoService);
+
+    expect(pedidoService.obtenerProductoMasVendido()).toBeUndefined();
+  });
 });
