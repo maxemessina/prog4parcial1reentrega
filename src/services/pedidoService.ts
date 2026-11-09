@@ -12,15 +12,7 @@ export class PedidoService {
   constructor(private readonly productos: ProductoLookup) {}
 
   crearPedido(items: PedidoItem[]): PedidoConTotal {
-    const total = items.reduce((acumulado, item) => {
-      const producto = this.productos.obtenerProductoPorId(item.productoId);
-
-      if (!producto) {
-        throw new Error(`Producto con ID ${item.productoId} no encontrado`);
-      }
-
-      return acumulado + producto.calcularPrecio() * item.cantidad;
-    }, 0);
+    const total = this.calcularTotalItems(items);
 
     const pedido: Pedido = {
       id: this.siguienteId++,
@@ -56,12 +48,7 @@ export class PedidoService {
   calcularUnidadesVendidas(): Record<string, number> {
     return this.pedidos.reduce<Record<string, number>>((ventas, pedido) => {
       for (const item of pedido.items) {
-        const producto = this.productos.obtenerProductoPorId(item.productoId);
-
-        if (!producto) {
-          throw new Error(`Producto con ID ${item.productoId} no encontrado`);
-        }
-
+        const producto = this.obtenerProducto(item.productoId);
         ventas[producto.nombre] = (ventas[producto.nombre] ?? 0) + item.cantidad;
       }
 
@@ -85,15 +72,24 @@ export class PedidoService {
   }
 
   private calcularTotalPedido(pedido: Pedido): number {
-    return pedido.items.reduce((total, item) => {
-      const producto = this.productos.obtenerProductoPorId(item.productoId);
+    return this.calcularTotalItems(pedido.items);
+  }
 
-      if (!producto) {
-        throw new Error(`Producto con ID ${item.productoId} no encontrado`);
-      }
-
+  private calcularTotalItems(items: PedidoItem[]): number {
+    return items.reduce((total, item) => {
+      const producto = this.obtenerProducto(item.productoId);
       return total + producto.calcularPrecio() * item.cantidad;
     }, 0);
+  }
+
+  private obtenerProducto(productoId: number): Producto {
+    const producto = this.productos.obtenerProductoPorId(productoId);
+
+    if (!producto) {
+      throw new Error(`Producto con ID ${productoId} no encontrado`);
+    }
+
+    return producto;
   }
 
   private copiarPedido(pedido: Pedido): Pedido {
