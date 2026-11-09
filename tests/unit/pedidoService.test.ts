@@ -62,4 +62,17 @@ describe("PedidoService", () => {
     });
     expect(pedidoService.obtenerPedidoPorId(2)).toBeUndefined();
   });
+
+  it("calcula la facturacion total de los pedidos creados", () => {
+    const muffin = new Muffin(1);
+    const productoService = {
+      obtenerProductoPorId: vi.fn().mockReturnValue(muffin),
+    };
+    const pedidoService = new PedidoService(productoService);
+
+    pedidoService.crearPedido([{ productoId: 1, cantidad: 2 }]);
+    pedidoService.crearPedido([{ productoId: 1, cantidad: 3 }]);
+
+    expect(pedidoService.calcularFacturacionTotal()).toBe(12_500);
+  });
 });
