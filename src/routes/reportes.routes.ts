@@ -14,5 +14,17 @@ export function TomaReportesRouter(
     res.status(200).json({ facturacionTotal });
   });
 
+  router.get("/mas-vendido", (_req, res) => {
+    const masVendido = pedidoService.obtenerProductoMasVendido();
+
+    if (!masVendido) {
+      return res.status(404).json({
+        error: "No hay ventas registradas",
+      });
+    }
+
+    return res.status(200).json(masVendido);
+  });
+
   return router;
 }
