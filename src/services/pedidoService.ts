@@ -69,6 +69,21 @@ export class PedidoService {
     }, {});
   }
 
+  obtenerProductoMasVendido():
+    | { producto: string; cantidad: number }
+    | undefined {
+    const unidadesVendidas = this.calcularUnidadesVendidas();
+    let masVendido: { producto: string; cantidad: number } | undefined;
+
+    for (const [producto, cantidad] of Object.entries(unidadesVendidas)) {
+      if (!masVendido || cantidad > masVendido.cantidad) {
+        masVendido = { producto, cantidad };
+      }
+    }
+
+    return masVendido;
+  }
+
   private calcularTotalPedido(pedido: Pedido): number {
     return pedido.items.reduce((total, item) => {
       const producto = this.productos.obtenerProductoPorId(item.productoId);
