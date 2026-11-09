@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { createApp } from "./app";
+import productosRouter from "./routes/productos.routes";
 
 function createPendingRouter(resource: string): Router {
   const router = Router();
@@ -20,7 +21,7 @@ if (!Number.isInteger(port) || port < 1 || port > 65535) {
 }
 
 const app = createApp({
-  productos: createPendingRouter("productos"),
+  productos: productosRouter,
   pedidos: createPendingRouter("pedidos"),
   reportes: createPendingRouter("reportes"),
 });
