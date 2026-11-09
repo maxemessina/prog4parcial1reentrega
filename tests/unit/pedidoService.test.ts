@@ -101,4 +101,29 @@ describe("PedidoService", () => {
       "Porción de torta selva negra": 3,
     });
   });
+
+  it("devuelve el producto con mayor cantidad de unidades vendidas", () => {
+    const muffin = new Muffin(1);
+    const torta = new TortaSelvaNegra(2);
+    const productoService = {
+      obtenerProductoPorId: vi.fn((id: number) =>
+        id === 1 ? muffin : id === 2 ? torta : undefined,
+      ),
+    };
+    const pedidoService = new PedidoService(productoService);
+
+    pedidoService.crearPedido([
+      { productoId: 1, cantidad: 2 },
+      { productoId: 2, cantidad: 1 },
+    ]);
+    pedidoService.crearPedido([
+      { productoId: 1, cantidad: 3 },
+      { productoId: 2, cantidad: 2 },
+    ]);
+
+    expect(pedidoService.obtenerProductoMasVendido()).toEqual({
+      producto: "Muffin de chocolate",
+      cantidad: 5,
+    });
+  });
 });
