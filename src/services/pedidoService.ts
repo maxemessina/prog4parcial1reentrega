@@ -46,6 +46,25 @@ export class PedidoService {
     return pedido ? this.copiarPedido(pedido) : undefined;
   }
 
+  calcularFacturacionTotal(): number {
+    return this.pedidos.reduce(
+      (total, pedido) => total + this.calcularTotalPedido(pedido),
+      0,
+    );
+  }
+
+  private calcularTotalPedido(pedido: Pedido): number {
+    return pedido.items.reduce((total, item) => {
+      const producto = this.productos.obtenerProductoPorId(item.productoId);
+
+      if (!producto) {
+        throw new Error(`Producto con ID ${item.productoId} no encontrado`);
+      }
+
+      return total + producto.calcularPrecio() * item.cantidad;
+    }, 0);
+  }
+
   private copiarPedido(pedido: Pedido): Pedido {
     return {
       ...pedido,
