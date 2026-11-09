@@ -1,6 +1,6 @@
 import {
+  calcularPrecioCafe,
   gramosPorTamanoFiltrado,
-  precioPorGramo,
   type TamanoCafe,
   type VariedadCafe,
 } from "./Cafe";
@@ -16,9 +16,11 @@ export class CafeFiltrado extends Producto {
   }
 
   override calcularPrecio(): number {
-    return (
-      this.precioBase +
-      gramosPorTamanoFiltrado[this.tamano] * precioPorGramo[this.variedad]
+    return calcularPrecioCafe(
+      this.precioBase,
+      this.tamano,
+      this.variedad,
+      gramosPorTamanoFiltrado,
     );
   }
 }

@@ -18,3 +18,12 @@ export const precioPorGramo: Record<VariedadCafe, number> = {
   Colombia: 180,
   "Etiopía": 240,
 };
+
+export function calcularPrecioCafe(
+  precioBase: number,
+  tamano: TamanoCafe,
+  variedad: VariedadCafe,
+  gramosPorTamano: Record<TamanoCafe, number>,
+): number {
+  return precioBase + gramosPorTamano[tamano] * precioPorGramo[variedad];
+}
