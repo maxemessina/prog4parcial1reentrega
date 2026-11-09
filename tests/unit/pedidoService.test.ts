@@ -45,4 +45,21 @@ describe("PedidoService", () => {
       },
     ]);
   });
+
+  it("obtiene un pedido por su ID y devuelve undefined si no existe", () => {
+    const muffin = new Muffin(1);
+    const productoService = {
+      obtenerProductoPorId: vi.fn().mockReturnValue(muffin),
+    };
+    const pedidoService = new PedidoService(productoService);
+
+    pedidoService.crearPedido([{ productoId: 1, cantidad: 1 }]);
+
+    expect(pedidoService.obtenerPedidoPorId(1)).toEqual({
+      id: 1,
+      items: [{ productoId: 1, cantidad: 1 }],
+      estado: "pendiente",
+    });
+    expect(pedidoService.obtenerPedidoPorId(2)).toBeUndefined();
+  });
 });
