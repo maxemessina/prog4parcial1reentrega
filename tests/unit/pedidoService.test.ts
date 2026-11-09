@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { Muffin } from "../../src/models/Muffin";
+import { TortaSelvaNegra } from "../../src/models/Torta";
 import { PedidoService } from "../../src/services/pedidoService";
 
 describe("PedidoService", () => {
@@ -74,5 +75,30 @@ describe("PedidoService", () => {
     pedidoService.crearPedido([{ productoId: 1, cantidad: 3 }]);
 
     expect(pedidoService.calcularFacturacionTotal()).toBe(12_500);
+  });
+
+  it("calcula las unidades vendidas agrupadas por producto", () => {
+    const muffin = new Muffin(1);
+    const torta = new TortaSelvaNegra(2);
+    const productoService = {
+      obtenerProductoPorId: vi.fn((id: number) =>
+        id === 1 ? muffin : id === 2 ? torta : undefined,
+      ),
+    };
+    const pedidoService = new PedidoService(productoService);
+
+    pedidoService.crearPedido([
+      { productoId: 1, cantidad: 2 },
+      { productoId: 2, cantidad: 1 },
+    ]);
+    pedidoService.crearPedido([
+      { productoId: 1, cantidad: 3 },
+      { productoId: 2, cantidad: 2 },
+    ]);
+
+    expect(pedidoService.calcularUnidadesVendidas()).toEqual({
+      "Muffin de chocolate": 5,
+      "Porción de torta selva negra": 3,
+    });
   });
 });
