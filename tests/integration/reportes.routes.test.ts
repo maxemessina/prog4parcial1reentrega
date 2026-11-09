@@ -83,3 +83,51 @@ describe("GET /reportes/mas-vendido", () => {
     });
   });
 });
+ 
+
+describe("GET /reportes/facturacion sin ventas", () => {
+  it("devuelve facturación 0 cuando no hay pedidos", async () => {
+    const catalogo = {
+      obtenerProductoPorId: (_id: number) => undefined,
+    };
+
+    const pedidoService = new PedidoService(catalogo);
+
+    const app = createApp({
+      productos: Router(),
+      pedidos: Router(),
+      reportes: TomaReportesRouter(pedidoService),
+    });
+
+    const res = await request(app).get("/reportes/facturacion");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      facturacionTotal: 0,
+    });
+  });
+});
+
+
+describe("GET /reportes/mas-vendido sin ventas", () => {
+  it("devuelve 404 cuando no hay ventas registradas", async () => {
+    const catalogo = {
+      obtenerProductoPorId: (_id: number) => undefined,
+    };
+
+    const pedidoService = new PedidoService(catalogo);
+
+    const app = createApp({
+      productos: Router(),
+      pedidos: Router(),
+      reportes: TomaReportesRouter(pedidoService),
+    });
+
+    const res = await request(app).get("/reportes/mas-vendido");
+
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({
+      error: "No hay ventas registradas",
+    });
+  });
+});
