@@ -1,4 +1,4 @@
-import type { PedidoConTotal, PedidoItem } from "../models/Pedido";
+import type { Pedido, PedidoConTotal, PedidoItem } from "../models/Pedido";
 import type { Producto } from "../models/Producto";
 
 interface ProductoLookup {
@@ -6,6 +6,7 @@ interface ProductoLookup {
 }
 
 export class PedidoService {
+  private readonly pedidos: Pedido[] = [];
   private siguienteId = 1;
 
   constructor(private readonly productos: ProductoLookup) {}
@@ -21,11 +22,28 @@ export class PedidoService {
       return acumulado + producto.calcularPrecio() * item.cantidad;
     }, 0);
 
-    return {
+    const pedido: Pedido = {
       id: this.siguienteId++,
       items: items.map((item) => ({ ...item })),
       estado: "pendiente",
+    };
+
+    this.pedidos.push(pedido);
+
+    return {
+      ...this.copiarPedido(pedido),
       total,
+    };
+  }
+
+  listarPedidos(): Pedido[] {
+    return this.pedidos.map((pedido) => this.copiarPedido(pedido));
+  }
+
+  private copiarPedido(pedido: Pedido): Pedido {
+    return {
+      ...pedido,
+      items: pedido.items.map((item) => ({ ...item })),
     };
   }
 }
