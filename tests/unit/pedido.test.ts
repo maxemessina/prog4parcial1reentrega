@@ -6,6 +6,7 @@ import express from "express";
 import { createApp } from "../../src/app";
 import { PedidoService } from "../../src/services/pedidoService";
 import { Producto } from "../../src/models/Producto";
+import { crearPedidosRouter } from "../../src/routes/pedidos.routes";
 
 // Producto concreto para utilizar en las pruebas
 class ProductoPrueba extends Producto {
@@ -32,11 +33,12 @@ describe("Rutas de pedidos", () => {
   beforeEach(() => {
     const pedidoService = new PedidoService(productoLookup);
 
-    // Por ahora utilizamos un router vacío.
-    // Luego lo reemplazaremos por el router real de pedidos.
+  const pedidosRouter = crearPedidosRouter(pedidoService);
+    
+    //reemplazo el router vacio x el router real
     app = createApp({
       productos: express.Router(),
-      pedidos: express.Router(),
+      pedidos: pedidosRouter,
       reportes: express.Router(),
     });
   });
