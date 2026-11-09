@@ -42,3 +42,44 @@ describe("GET /reportes/facturacion", () => {
     });
   });
 });
+
+
+describe("GET /reportes/mas-vendido", () => {
+  it("devuelve el producto más vendido con su cantidad", async () => {
+    const producto1 = new CafeExpreso(1, "Pocillo", "Brasil");
+    const producto2 = new CafeExpreso(2, "Pocillo", "Colombia");
+
+    const catalogo = {
+      obtenerProductoPorId: (id: number) => {
+        if (id === 1) return producto1;
+        if (id === 2) return producto2;
+        return undefined;
+      },
+    };
+
+    const pedidoService = new PedidoService(catalogo);
+
+    pedidoService.crearPedido([
+      { productoId: 1, cantidad: 3 },
+      { productoId: 2, cantidad: 1 },
+    ]);
+
+    pedidoService.crearPedido([
+      { productoId: 1, cantidad: 2 },
+    ]);
+
+    const app = createApp({
+      productos: Router(),
+      pedidos: Router(),
+      reportes: TomaReportesRouter(pedidoService),
+    });
+
+    const res = await request(app).get("/reportes/mas-vendido");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      producto: producto1.nombre,
+      cantidad: 5,
+    });
+  });
+});
