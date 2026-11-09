@@ -2,8 +2,9 @@ import { describe, it, expect } from "vitest";
 import request from "supertest";
 import express from "express";
 import { createApp } from "../../src/app";
+import productosRouter from "../../src/routes/productos.routes"
 
-const productos = express.Router();
+const productos = productosRouter;
 const pedidos = express.Router();
 const reportes = express.Router();
 
