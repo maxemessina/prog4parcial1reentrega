@@ -53,6 +53,22 @@ export class PedidoService {
     );
   }
 
+  calcularUnidadesVendidas(): Record<string, number> {
+    return this.pedidos.reduce<Record<string, number>>((ventas, pedido) => {
+      for (const item of pedido.items) {
+        const producto = this.productos.obtenerProductoPorId(item.productoId);
+
+        if (!producto) {
+          throw new Error(`Producto con ID ${item.productoId} no encontrado`);
+        }
+
+        ventas[producto.nombre] = (ventas[producto.nombre] ?? 0) + item.cantidad;
+      }
+
+      return ventas;
+    }, {});
+  }
+
   private calcularTotalPedido(pedido: Pedido): number {
     return pedido.items.reduce((total, item) => {
       const producto = this.productos.obtenerProductoPorId(item.productoId);
