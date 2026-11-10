@@ -1,4 +1,9 @@
 import express, { type Router } from "express";
+import { crearPedidosRouter } from "./routes/pedidos.routes";
+import { TomaReportesRouter } from "./routes/reportes.routes";
+import productosRouter from "./routes/productos.routes";
+import { PedidoService } from "./services/pedidoService";
+import { obtenerProductoPorId } from "./services/productoService";
 
 export interface AppRouters {
   productos: Router;
@@ -18,4 +23,15 @@ export function createApp({ productos, pedidos, reportes }: AppRouters) {
   });
 
   return app;
+}
+
+export function createConfiguredApp() {
+  const productoLookup = { obtenerProductoPorId };
+  const pedidoService = new PedidoService(productoLookup);
+
+  return createApp({
+    productos: productosRouter,
+    pedidos: crearPedidosRouter(pedidoService),
+    reportes: TomaReportesRouter(pedidoService),
+  });
 }
