@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { createApp } from "./app";
-import productosRouter from "../src/routes/productos.routes";
-
+import productosRouter from "./routes/productos.routes";
 
 function createPendingRouter(resource: string): Router {
   const router = Router();
