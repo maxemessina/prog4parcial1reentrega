@@ -1,35 +1,29 @@
-
 import { Router } from "express";
-import {
-  listarProductos,
-  obtenerProductoPorId,
-} from "../services/productoService";
 
 const router = Router();
 
-router.get("/", (_request, response) => {
-  const productos = listarProductos();
+const productos = [
+  { id: 1, nombre: "Café expreso", precio: 1500 },
+  { id: 2, nombre: "Café filtrado", precio: 1800 },
+  { id: 3, nombre: "Muffin", precio: 2000 },
+];
 
-  response.status(200).json(productos);
+// GET productos (devuelve todos los productos.)
+router.get("/", (_req, res) => {
+  res.status(200).json(productos);
 });
-router.get("/:id", (request, response) => {
-  const id = Number(request.params.id);
 
-  if (!Number.isInteger(id) || id <= 0) {
-    return response.status(400).json({
-      error: "ID de producto inválido",
-    });
-  }
+// GET productos/:id (busca y devuelve el producto con ID === ID)
+router.get("/:id", (req, res) => {
+  const id = Number(req.params.id);
 
-  const producto = obtenerProductoPorId(id);
-
+  const producto = productos.find((p) => p.id === id);
+// Si el id no coincide con ninguno devuelve 404.
   if (!producto) {
-    return response.status(404).json({
-      error: "Producto no encontrado",
-    });
+    return res.status(404).json({ error: "Producto no encontrado" });
   }
 
-  return response.status(200).json(producto);
+  return res.status(200).json(producto);
 });
 
 export default router;
